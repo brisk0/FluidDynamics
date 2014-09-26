@@ -1,0 +1,13 @@
+#Creative Tabs
+itemGroup.fluiddynamics=Fluid Dynamics
+
+#Items
+item.fluiddynamics:pail.name=Pail
+
+#Blocks
+tile.fluiddynamics:blockPail.name=Block O' Pail
+
+#Keybindings
+keys.fluiddynamics.category=Fluid Dynamics
+keys.fluiddynamics.charge=Charge
+keys.fluiddynamics.release=Release
