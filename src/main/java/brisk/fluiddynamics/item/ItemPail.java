@@ -17,6 +17,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.*;
 
+import java.util.Map;
+
 /**
  * Created by brisk on 22/09/14.
  */
@@ -28,7 +30,7 @@ public class ItemPail extends ItemFD implements IFluidContainerItem {
     {
         super();
         setUnlocalizedName("pail");
-        //If we want this higher we will have to give back a separate itemstack with a different maxStackSize
+        //If we want this higher we will have to give back a separate ItemStack with a different maxStackSize
         //Not sure what we'd do with fill()
         this.setMaxStackSize(1);
     }
@@ -51,13 +53,12 @@ public class ItemPail extends ItemFD implements IFluidContainerItem {
         } else if (block instanceof BlockStaticLiquid){
             scoopVanilla(pail, block, world, x, y, z);
         }
-        //else just consult the fluid registry?
 
         return pail;
     }
 
     public boolean scoopForge(ItemStack pail, IFluidBlock fluidBlock, World world, int x, int y, int z) {
-        //Have a look at this for redundancy, since it seems even forge fluids can only drain 1000mB at a time.
+        //TODO Migrate unhelpful code to scoopDynamic. Limit this to isPailEmpty ? transfer; return true : return false
         LogHelper.log(fluidBlock.getFluid().getName());
         FluidStack fluidStack = FluidHelper.getFluidStack(pail);
         int fluidInContainer = fluidStack == null ? 0 : fluidStack.amount;
@@ -78,17 +79,14 @@ public class ItemPail extends ItemFD implements IFluidContainerItem {
         if (this.getFluid(pail) != null) {
             return false;
         }
-        Material material = block.getMaterial();
-        //should we be initialising NEW materials here? seems strange...
-        if (material == material.water) {
-            this.fill(pail, new FluidStack(new Fluid("water"), 1000), true);
-            world.setBlockToAir(x,y,z);
-            return true;
-        }
-        if (material == material.lava) {
-            this.fill(pail, new FluidStack(new Fluid("lava"), 1000), true);
-            world.setBlockToAir(x,y,z);
-            return true;
+
+        Map<String, Fluid> fluids = FluidRegistry.getRegisteredFluids();
+        for (Fluid fluid : fluids.values()) {
+            if (block == fluid.getBlock()) {
+                this.fill(pail, new FluidStack(fluid, 1000), true);
+                world.setBlockToAir(x,y,z);
+                return true;
+            }
         }
         return false;
     }
@@ -103,6 +101,7 @@ public class ItemPail extends ItemFD implements IFluidContainerItem {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack itemStack, int pass) {
+        //TODO build hashmap/array during initialisation for faster lookup.
         if (pass == 1) {
             FluidStack fluid = FluidHelper.getFluidStack(itemStack);
             if (fluid != null) {
