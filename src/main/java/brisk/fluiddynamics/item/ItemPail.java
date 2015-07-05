@@ -1,5 +1,6 @@
 package brisk.fluiddynamics.item;
 
+import brisk.fluiddynamics.creativetab.CreativeTabFD;
 import brisk.fluiddynamics.reference.Reference;
 import brisk.fluiddynamics.util.FluidHelper;
 import brisk.fluiddynamics.util.LogHelper;
@@ -7,11 +8,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStaticLiquid;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -22,17 +21,29 @@ import java.util.Map;
 /**
  * Created by brisk on 22/09/14.
  */
-public class ItemPail extends ItemFD implements IFluidContainerItem {
+public class ItemPail extends ItemFluidContainer {
     public IIcon pailIcon;
     public IIcon fluidIcon;
 
     public ItemPail()
     {
-        super();
+        super(0);
         setUnlocalizedName("pail");
-        //If we want this higher we will have to give back a separate ItemStack with a different maxStackSize
-        //Not sure what we'd do with fill()
         this.setMaxStackSize(1);
+        this.setCapacity(1000);
+        this.setCreativeTab(CreativeTabFD.FD_TAB);
+    }
+
+    @Override
+    public String getUnlocalizedName()
+    {
+        return String.format("item.%s:%s", Reference.MOD_ID.toLowerCase(), "pail");
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack itemStack)
+    {
+        return String.format("item.%s:%s", Reference.MOD_ID.toLowerCase(), "pail");
     }
 
     @Override
@@ -117,9 +128,7 @@ public class ItemPail extends ItemFD implements IFluidContainerItem {
         if (pass == 1) {
             FluidStack fluidStack = FluidHelper.getFluidStack(stack);
             if (fluidStack != null) {
-                if (fluidStack.amount > 0) {
                     return fluidIcon;
-                }
             }
         }
         return pailIcon;
@@ -131,8 +140,8 @@ public class ItemPail extends ItemFD implements IFluidContainerItem {
         return true;
     }
 
-    protected int capacity = 1000;
-
+    //protected int capacity = 1000;
+    /*
     @Override
     public FluidStack getFluid(ItemStack container) {
         if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Fluid"))
@@ -225,4 +234,5 @@ public class ItemPail extends ItemFD implements IFluidContainerItem {
     {
         return FluidHelper.drain(container, maxDrain, doDrain);
     }
+    */
 }

@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.ItemFluidContainer;
 
 @GameRegistry.ObjectHolder(Reference.MOD_ID)
 public class ModItems {
-    public static final ItemFD pail = new ItemPail();
+    public static final Item pail = new ItemPail();
 
     public static void init()
     {
